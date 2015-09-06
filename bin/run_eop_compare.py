@@ -15,7 +15,7 @@ _stance_map = \
 
 if __name__ == '__main__':
     df_clean_test = get_dataset('url-versions-2015-06-14-clean-test.csv')
-    eop_files = [f for f in os.listdir(os.path.join('data', 'eop')) if f.endswith('.txt')]
+    eop_files = [f for f in os.listdir(os.path.join('..', 'data', 'eop')) if f.endswith('.txt')]
 
     for f in eop_files:
         print f
