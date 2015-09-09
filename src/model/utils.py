@@ -180,6 +180,12 @@ def get_stanparse_data():
 
 
 @lru_cache(maxsize=1)
+def get_stanparse_depths():
+    with open(os.path.join(_pickled_data_folder, 'stanparse-depths.pickle'), 'rb') as f:
+        return pickle.load(f)
+
+
+@lru_cache(maxsize=1)
 def get_cosine_similarity_data():
     with open(os.path.join(_pickled_data_folder, 'cosine-similarity.pickle'), 'rb') as f:
         return pickle.load(f)
@@ -380,12 +386,55 @@ def run_test(X, y, test_data, predictor, display=False):
         print('>> Running against test data <<\n')
 
     predictor.fit(X, y)
-    score = predictor.score(test_data, test_data.articleHeadlineStance.values)
+    test_data_copy = test_data.copy()
+    y_test = test_data_copy.articleHeadlineStance.values
+    score = predictor.score(test_data_copy, y_test)
 
     if display:
         print(str(score))
     return score
 
+
+_svo_labels = set(['nsubj', 'dobj'])
+
+
+def get_svo(grph, grph_labels, node=0, svo=None):
+    if svo is None:
+        svo = []
+    svo_match = dict([(l, (x, y)) for ((x, y), l) in grph_labels.items() \
+                      if x == node and l in _svo_labels])
+
+    def valid_match(m):
+        if len(m) != 2:
+            return False
+        if set(m.keys()).intersection(_svo_labels) != _svo_labels:
+            return False
+        return True
+
+    if valid_match(svo_match):
+        svo.append(svo_match)
+    for child in grph.get(node, []):
+        get_svo(grph, grph_labels, child, svo)
+    return svo
+
+
+@lru_cache(maxsize=100000)
+def get_svo_triples(id):
+    stanparse_depths = get_stanparse_depths()
+    d = []
+    for i, x in stanparse_depths[id].items():
+        grph, grph_labels, _ = x
+        d.extend([(i, s) for s in get_svo(grph, grph_labels)])
+    return d
+
+
+if __name__ == '__main__':
+    id = get_stanparse_data().keys()[3]
+    for id in get_stanparse_data().keys():
+        triples = get_svo_triples(id)
+        if triples:
+            print id
+            print triples
 
 
 

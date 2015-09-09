@@ -3,19 +3,11 @@ import os
 import pandas as pd
 from sklearn.metrics import accuracy_score
 
-from model.utils import get_dataset, calc_confusion_matrix, calc_measures
+from model.utils import calc_confusion_matrix, calc_measures
 
-_observing_threshold = 0.7
-
-_stance_map = \
-    {
-        'NonEntailment': 'against',
-        'Entailment': 'for'
-    }
 
 if __name__ == '__main__':
-    df_clean_test = get_dataset('url-versions-2015-06-14-clean-test.csv')
-    eop_files = [f for f in os.listdir(os.path.join('..', 'data', 'eop')) if f.endswith('.txt')]
+    eop_files = [f for f in os.listdir(os.path.join('..', 'output', 'eop')) if f.endswith('.txt')]
 
     for f in eop_files:
         print f
@@ -23,21 +15,23 @@ if __name__ == '__main__':
         opts[-1] = opts[-1].split('_')[0]
         print 'options:', opts
 
-        df_eop = pd.read_csv(os.path.join('..', 'data', 'eop', f), delimiter='\t', header=None)
-        df_eop.columns = ['id', 'na', 'stance', 'confidence']
+        df_eop = pd.read_csv(os.path.join('..', 'output', 'eop', f), delimiter='\t', header=None)
+        df_eop.columns = ['id', 'benchmark', 'predicted', 'confidence']
 
-        df_eop.loc[df_eop.confidence < _observing_threshold, 'stance'] = 'observing'
-        for k, i in _stance_map.items():
-            df_eop.loc[df_eop.stance == k, 'stance'] = i
+        df_eop.loc[df_eop.benchmark == 'ENTAILMENT', 'benchmark'] = 'for'
+        df_eop.loc[df_eop.benchmark == 'CONTRADICTION', 'benchmark'] = 'against'
+        df_eop.loc[df_eop.benchmark == 'UNKNOWN', 'benchmark'] = 'observing'
 
-        df_joined = df_eop.join(df_clean_test, on='id')
+        df_eop.loc[df_eop.predicted == 'Entailment', 'predicted'] = 'for'
+        df_eop.loc[df_eop.predicted == 'Contradiction', 'predicted'] = 'against'
+        df_eop.loc[df_eop.predicted == 'Unknown', 'predicted'] = 'observing'
 
-        y = df_joined.articleHeadlineStance
-        y_hat = df_joined.stance
-
+        y = df_eop.benchmark
+        y_hat = df_eop.predicted
         cm = calc_confusion_matrix(y, y_hat)
         measures = calc_measures(cm)
         accuracy = accuracy_score(y, y_hat)
+
         print 'accuracy:', accuracy
         print 'per class measures:'
         print measures
