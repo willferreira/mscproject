@@ -6,8 +6,9 @@ This repository contains the souce code for my MSc Project: "For or Against? Ass
 4. installing the excellent anaconda distribution of Python 2.7 from continuum.io, available here: http://continuum.io/downloads 
 5. creating a new Python virtual environment, by issuing the command: **conda create -n XXX anaconda python=2.7** at the command prompt (replacing XXX with whatever you want to call the environment, e.g. mscproject_py27)
 6. activating the new virtual environment issuing the command: **source activate XXX** (or whatever you called it), at the command prompt
-7. installing package: repoze.lru (provides an in-memory memoizing function decorator) by issuing the command: **conda install repoze.lru**, at the command prompt
-8. installing package: munkres 1.0.7 (provides an implementation of the Hungarian Algorith, used for word alignment) by:
+7. installing package: repoze.lru (provides an in-memory memoizing function decorator) by issuing the command: **conda install repoze.lru**, at the command prompt (accept whatever package updates it proposes)
+8. installing package: gensim (provides a word2vec library) by issuing the command: **conda install gensim**, at the command prompt (accept whatever package updates it proposes)
+9. installing package: munkres 1.0.7 (provides an implementation of the Hungarian Algorith, used for word alignment) by:
     1. downloading the package from https://pypi.python.org/pypi/munkres/
     2. unzipping the file somewhere
     3. cd munkres-1.0.7
