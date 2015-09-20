@@ -14,11 +14,14 @@ from model.utils import get_tokenized_lemmas, is_antonym, is_synonym, get_stanpa
 
 class BoWTransform(StatelessTransform):
 
-    def __init__(self):
+    def __init__(self, ngram_upper_range=2, max_features=500):
         self.cv = None
+        self.ngram_upper_range = ngram_upper_range
+        self.max_features = max_features
 
     def fit(self, X, y=None):
-        self.cv = CountVectorizer(ngram_range=(1, 2))
+        self.cv = CountVectorizer(ngram_range=(1, self.ngram_upper_range),
+                                  max_features=self.max_features)
         text = X.articleHeadline.values
         self.cv.fit_transform(text)
         return self
@@ -26,25 +29,6 @@ class BoWTransform(StatelessTransform):
     def transform(self, X, y=None):
         text = X.articleHeadline.values
         return self.cv.transform(text)
-
-
-class SemanticRelationshipTransform1(StatelessTransform):
-
-    _funcs = {
-        0: is_synonym,
-        1: is_antonym,
-        2: entails,
-    }
-
-    def transform(self, X):
-        mat = np.zeros((len(X), len(self._funcs)))
-        for i, (_, s) in enumerate(X.iterrows()):
-            claim_headline = get_tokenized_lemmas(s.claimHeadline)
-            article_headline = get_tokenized_lemmas(s.articleHeadline)
-            word_pairs = list(it.product(article_headline, claim_headline))
-            for j, f in self._funcs.items():
-                mat[i, j] = sum([1 for (v, w) in word_pairs if f(v, w)])
-        return mat
 
 
 _refuting_seed_words = [
@@ -59,7 +43,7 @@ _refuting_seed_words = [
                         'nope',
                         'doubt', 'doubts'
 ]
-# _refuting_words = get_wordnet_list(get_synonyms, _refuting_seed_words)
+
 _refuting_words = _refuting_seed_words
 
 
@@ -101,7 +85,7 @@ class InteractionTransform(StatelessTransform):
         self.refuting_words_transform = RefutingWordsTransform()
         self.question_mark_transform = QuestionMarkTransform()
         self.hedging_words_transform = HedgingWordsTransform()
-        self.polynomial = PolynomialFeatures(degree=2, interaction_only=True, include_bias=False)
+        self.polynomial = PolynomialFeatures(degree=2, interaction_only=False, include_bias=False)
 
     def transform(self, X):
         X1 = self.refuting_words_transform.transform(X)

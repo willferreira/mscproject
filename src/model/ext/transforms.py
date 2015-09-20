@@ -162,9 +162,9 @@ class SVOTransform(StatelessTransform):
 
 
 if __name__ == '__main__':
-    svot = SVOTransform()
+    svot = NegationAlignmentTransform()
     df = get_dataset()
-    # df = df[df.articleId == 'b9d1e340-771b-11e4-94c6-4131d5b705e4']
+    # df = df[df.articleId == '9a203340-947a-11e4-b6bf-fdc8b7e3bcff']
     print svot.transform(df)
 
 

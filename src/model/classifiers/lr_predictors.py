@@ -1,20 +1,7 @@
 from sklearn.linear_model import LogisticRegression
 from sklearn.pipeline import make_pipeline, make_union
 
-from model.baseline.transforms import \
-    SemanticRelationshipTransform1, \
-    RefutingWordsTransform, \
-    QuestionMarkTransform, \
-    HedgingWordsTransform, \
-    WordOverlapTransform, \
-    BrownClusterPairTransform, \
-    BrownClusterBigramTransform, \
-    PolarityTransform, \
-    AlignedWordsTransform, \
-    AlignedSimilarityTransform
-
 from model.base import AbstractPredictor
-from model.utils import get_aligned_data
 
 
 class LogitPredictor(AbstractPredictor):

@@ -18,7 +18,9 @@ from model.baseline.transforms import (
     HedgingWordsTransform,
     InteractionTransform,
     NegationOfRefutingWordsTransform,
-    BoWTransform
+    BoWTransform,
+    PolarityTransform,
+    BrownClusterPairTransform
 )
 
 from model.ext.transforms import (
@@ -30,59 +32,63 @@ from model.ext.transforms import (
 )
 
 
-_classifiers = {
-    'COMPOUND': lambda (obs, fa): CompoundPredictor(obs, fa),
-    'BLR': lambda t: LogitPredictor(t),
-    'BRF': lambda t: RandomForestPredictor(t),
-}
-
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='run_baseline cmd-line arguments.')
 
-    parser.add_argument('--classifier', default='BLR', type=str)
+    parser.add_argument('-i', action='store_true', default=False)
+
+    # inc_transforms = [
+    #     'Q',                # 1             1
+    #     'BoW-Hed',          # 2-36         35
+    #     'BoW-Ref',          # 37-48         12
+    #     'I',                # 49-1272       1,224
+    #     'BoW',              # 1273-1772     500
+    #     'Sim-Algn-W2V',     # 1773-1773     1
+    #     'Sim-Algn-PPDB',    # 1774-1774     1
+    #     'Root-Dist',        # 1775-1776     2
+    #     'Neg-Algn',         # 1777-1779     3
+    #     'SVO',              # 1780-1788     9
+    #     ]
+
+    parser.add_argument('-f',
+                        default='Q,BoW-Hed,BoW-Ref,I,BoW,Sim-Algn-W2V,Sim-Algn-PPDB,Root-Dist,Neg-Algn,SVO',
+                        type=str)
     args = parser.parse_args()
 
-    classifier = args.classifier
-    print('Using {0:s} classifier'.format(classifier))
-    predictor = _classifiers.get(classifier)
+    predictor = LogitPredictor
 
     train_data = get_dataset('url-versions-2015-06-14-clean-train.csv')
     X, y = split_data(train_data)
+
     test_data = get_dataset('url-versions-2015-06-14-clean-test.csv')
 
     transforms = {
-        'BoW': BoWTransform,
+        'BoW': lambda: BoWTransform(),
         'BoW-Ref': RefutingWordsTransform,
         'BoW-Hed': HedgingWordsTransform,
         'Q': QuestionMarkTransform,
         'I': InteractionTransform,
-        'Sim-W2V': Word2VecSimilaritySemanticTransform,
+        'Sim-Algn-W2V': Word2VecSimilaritySemanticTransform,
         'Sim-Algn-PPDB': AlignedPPDBSemanticTransform,
-        'BoW-Neg-Ref': NegationOfRefutingWordsTransform,
         'Neg-Algn': NegationAlignmentTransform,
         'Root-Dist': DependencyRootDistanceTransform,
-        'SVO': SVOTransform
+        'SVO': SVOTransform,
     }
 
-    inc_transforms = [
-        'BoW-Ref', 'BoW-Hed',
-        'Q', 'I',
-        'Sim-W2V',
-        'Sim-Algn-PPDB', 'BoW-Neg-Ref',
-        'Neg-Algn',
-        'BoW',
-        'Root-Dist',
-        # 'SVO'
-        ]
-
-    df_out = pd.DataFrame(index=inc_transforms, columns=['accuracy-cv', 'accuracy-test'], data=np.nan)
-
-    run_incremental = True
-    if run_incremental:
+    inc_transforms = args.f.split(',')
+    diff = set(inc_transforms).difference(transforms.keys())
+    if diff:
+        print 'Unrecognised features:', diff
+        sys.exit(1)
+    print 'Feature set:', inc_transforms
+    if args.i:
+        df_out = pd.DataFrame(index=inc_transforms,
+                              columns=['accuracy-cv', 'accuracy-test'], data=np.nan)
         inc_transforms_cls = []
         for i, k in enumerate(inc_transforms):
             inc_transforms_cls.append(transforms[k])
-            print(inc_transforms[:i+1])
+            print 'Using features:', inc_transforms[:i+1]
+
             p = predictor(inc_transforms_cls)
             cv_score = RunCV(X, y, p, display=True).run_cv()
             test_score = run_test(X, y, test_data, p, display=True)

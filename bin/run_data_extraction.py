@@ -59,7 +59,7 @@ def _clean_text(data):
 
     # Strip words "REPORT:" and "UPDATE:" from claim and article text
     _strip_words = ['REPORT', 'REPORTS', 'PODCAST',
-                    'CNN', 'CNBC', 'Net Extra']
+                    'CNN', 'CNBC', 'Net Extra', 'WSJ']
 
     def strip_report_update(s):
         for w in _strip_words:

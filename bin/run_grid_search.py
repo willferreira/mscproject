@@ -1,5 +1,4 @@
 from itertools import chain, combinations
-import argparse
 
 from sklearn import grid_search
 
@@ -7,24 +6,29 @@ from model.utils import get_dataset, split_data
 from model.classifiers.lr_predictors import LogitPredictor
 from model.cross_validation import ClaimKFold
 
-from model.baseline.transforms import \
-    SemanticRelationshipTransform1, \
-    RefutingWordsTransform, \
-    QuestionMarkTransform, \
-    HedgingWordsTransform, \
-    WordOverlapTransform, \
-    BrownClusterPairTransform, \
-    BrownClusterBigramTransform, \
-    PolarityTransform, \
-    AlignedWordsTransform, \
-    AlignedSimilarityTransform, \
-    Word2VecTransform
+from model.baseline.transforms import (
+    RefutingWordsTransform,
+    QuestionMarkTransform,
+    HedgingWordsTransform,
+    InteractionTransform,
+    NegationOfRefutingWordsTransform,
+    BoWTransform,
+    PolarityTransform
+)
+
+from model.ext.transforms import (
+    AlignedPPDBSemanticTransform,
+    NegationAlignmentTransform,
+    Word2VecSimilaritySemanticTransform,
+    DependencyRootDistanceTransform,
+    SVOTransform
+)
 
 
 def do_grid_search(X, y, classifier, param_grid, cv):
 
     def scorer(estimator, XX, yy):
-        return estimator.score(XX, yy)[3]
+        return estimator.score(XX, yy).accuracy
 
 
     clf = grid_search.GridSearchCV(classifier, param_grid, cv=cv, scoring=scorer, verbose=True)
@@ -43,39 +47,54 @@ def powerset(iterable):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description='run_baseline cmd-line arguments.')
 
-    parser.add_argument('--classifier', default='BLR', type=str)
-    args = parser.parse_args()
-
-    classifier = args.classifier
-    print('Using {0:s} classifier'.format(classifier))
-
-    baseline_transforms = [
-        SemanticRelationshipTransform1,
+    transforms = {
         RefutingWordsTransform,
-        QuestionMarkTransform,
         HedgingWordsTransform,
-        WordOverlapTransform,
-        PolarityTransform,
-        # Word2VecTransform
-    ]
+        QuestionMarkTransform,
+        InteractionTransform,
+        Word2VecSimilaritySemanticTransform,
+        AlignedPPDBSemanticTransform,
+        NegationOfRefutingWordsTransform,
+        NegationAlignmentTransform,
+        DependencyRootDistanceTransform,
+        SVOTransform,
+        # PolarityTransform
+    }
+
+    class CallableBowTransform(object):
+
+        def __init__(self, ngram_ur, max_feat):
+            self.ngram_ur = ngram_ur
+            self.max_feat = max_feat
+
+        def __call__(self, *args, **kwargs):
+            return BoWTransform(self.ngram_ur, self.max_feat)
+
+        def __str__(self):
+            return 'CallableBowTransform({0:d}, {1:d})'.format(self.ngram_ur, self.max_feat)
+
+        def __repr__(self):
+            return self.__str__()
+
+    bow_transform_funcs = []
+    for ngram_ur in range(2, 5):
+        for max_feat in (50, 100, 150, 200):
+            bow_transform_funcs.append(CallableBowTransform(ngram_ur, max_feat))
+
+    transforms.union(bow_transform_funcs)
 
     train_data = get_dataset('url-versions-2015-06-14-clean-train.csv')
     X, y = split_data(train_data)
-    ckf = ClaimKFold(X)
+    ckf = ClaimKFold(X, n_folds=5)
 
-    if classifier == 'BLR':
-        classifier = LogitPredictor(baseline_transforms)
+    classifier = LogitPredictor(transforms)
 
-        param_grid = [
-            {
-                'transforms': powerset(baseline_transforms)
-            }
-        ]
-    elif classifier == 'BRF':
-        pass
-    else:
-        pass
+    param_grid = [
+        {
+            # 'transforms': powerset(transforms)
+            'transforms': bow_transform_funcs
+        }
+    ]
 
     do_grid_search(X, y, classifier, param_grid, ckf)
