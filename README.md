@@ -111,16 +111,25 @@ You should now have all you need to run the code. Now, cd into the bin/ director
 To run the code for the MaxEntClassificationEDA classifier, do the following:
 
 1. Follow the instructions to download an install EOP, which can be found here: https://github.com/hltfbk/EOP-1.2.3/wiki
-2. To train the model with the RTE-3 training data-set, and then test it with the EmergentLite test data-set, 
+2. To train the model with the RTE-3 training data-set, and then test it with the EmergentLite test data-set: 
 
       1. cd into the following directory: <where you installed EOP>/Excitement-Open-Platform-1.2.3/target/EOP-1.2.3
-      2. to train the model, issue the following command at the prompt:
+      2. train the model: issue the following command at the prompt:
       
             java -Djava.ext.dirs=../EOP-1.2.3 eu.excitementproject.eop.util.runner.EOPRunner -train -trainFile ./eop-resources-1.2.3/data-set/English_dev.xml -config ./eop-resources-1.2.3/configuration-files/MaxEntClassificationEDA_Base+WN+VO+TP+TPPos_EN.xml
             
-      3. to test the model, issue the following command at the prompt:
+      3. test the model: issue the following command at the prompt:
       
             java -Djava.ext.dirs=../EOP-1.2.3 eu.excitementproject.eop.util.runner.EOPRunner -test -testFile <path to where mscproject was cloned>/mscproject/data/emergent/url-versions-2015-06-14-clean-test-rte.xml -config ./eop-resources-1.2.3/configuration-files/MaxEntClassificationEDA_Base+WN+VO+TP+TPPos_EN.xml -output <where you want the output to go>
+            
+3. To train the model with the EmergentLite training data-set, and then test it with the EmergentLite test data-set:
+
+      1. cd into the following directory: <where you installed EOP>/Excitement-Open-Platform-1.2.3/target/EOP-1.2.3
+      2. train the model: issue the following command at the prompt:
+      
+            java -Djava.ext.dirs=../EOP-1.2.3 eu.excitementproject.eop.util.runner.EOPRunner -train -trainFile <path to where mscproject was cloned>/mscproject/data/emergent/url-versions-2015-06-14-clean-train-rte.xml -config ./eop-resources-1.2.3/configuration-files/MaxEntClassificationEDA_Base+WN+VO+TP+TPPos_EN.xml
+            
+      3. test the model: same as step 3. above
 
       
 
