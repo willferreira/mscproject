@@ -12,15 +12,17 @@ This repository contains the souce code for my MSc Project: "For or Against? Ass
       **conda create -n XXX anaconda python=2.7** 
    
    (replacing XXX with whatever you want to call the environment, e.g. mscproject_py27)
-6. activating the new virtual environment issuing the command at the prompt:
+6. activating the new virtual environment issuing the followingcommand at the prompt:
 
       **source activate XXX** 
       
    (replacing XXX with whatever you called your environment)
-7. installing package: repoze.lru (provides a function memoize decorator) by issuing the command at the 
+7. installing package: repoze.lru (provides a function memoize decorator) by issuing the following command at the 
    prompt (accept whatever package updates it proposes):
+
       **conda install repoze.lru**
-8. installing package: gensim (provides a word2vec library) by issuing the command at the prompt 
+      
+8. installing package: gensim (provides a word2vec library) by issuing the following command at the prompt 
    (accept whatever package updates it proposes):
 
       **conda install gensim**
@@ -109,8 +111,13 @@ You should now have all you need to run the code. Now, cd into the bin/ director
 To run the code for the MaxEntClassificationEDA classifier, do the following:
 
 1. Follow the instructions to download an install EOP, which can be found here: https://github.com/hltfbk/EOP-1.2.3/wiki
-2. To train the model cd into the following directory: <where you installed EOP>/Excitement-Open-Platform-1.2.3/target/EOP-1.2.3
-3. 
+2. To train the model with the RTE-3 training data-set, 
+
+      1. cd into the following directory: <where you installed EOP>/Excitement-Open-Platform-1.2.3/target/EOP-1.2.3
+      2. issue the following command at the prompt:
+      
+            java -Djava.ext.dirs=../EOP-1.2.3 eu.excitementproject.eop.util.runner.EOPRunner -train -trainFile             ./eop-resources-1.2.3/data-set/English_dev.xml -config ./eop-resources-1.2.3/configuration-files/MaxEntClassificationEDA_Base+WN+VO+TP+TPPos_EN.xml
+
       
 
 
