@@ -108,8 +108,10 @@ You should now have all you need to run the code. Now, cd into the bin/ director
 
 To run the code for the MaxEntClassificationEDA classifier, do the following:
 
-1. Follow the instructions to download an install the code here: https://github.com/hltfbk/EOP-1.2.3/wiki
-2. 
+1. Follow the instructions to download an install EOP, which can be found here: https://github.com/hltfbk/EOP-1.2.3/wiki
+2. To train the model cd into the following directory: <where you installed EOP>/Excitement-Open-Platform-1.2.3/target/EOP-1.2.3
+3. 
+      
 
 
 
