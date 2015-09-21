@@ -68,7 +68,7 @@ You should now have all you need to run the code. Now, cd into the bin/ director
 
       As above, but the features are added incrementally, and the intermediate results of 10-fold cv are displayed 
       during the cv phase of training. The final output shows the changes in accuracy, averaged over the cv folds, 
-      and on the test set, as each new feature is added to the model. The output should look something like:
+      and on the test set, as each new feature is added to the model. The (final) output should look something like:
       
       >> Training classifier <<
       >> Classifying test data <<
@@ -113,7 +113,7 @@ You should now have all you need to run the code. Now, cd into the bin/ director
 To run the code for the MaxEntClassificationEDA classifier, do the following:
 
 1. Follow the instructions to download an install EOP, which can be found here: https://github.com/hltfbk/EOP-1.2.3/wiki
-2. To train the model with the English RTE-3 training data-set, and then test it with the EmergentLite test data-set: 
+2. Train the model with the English RTE-3 training data-set, and then test it with the EmergentLite test data-set: 
 
       1. cd into the following directory: <where you installed EOP>/Excitement-Open-Platform-1.2.3/target/EOP-1.2.3
       2. train the model: issue the following command at the prompt:
@@ -124,7 +124,7 @@ To run the code for the MaxEntClassificationEDA classifier, do the following:
       
             java -Djava.ext.dirs=../EOP-1.2.3 eu.excitementproject.eop.util.runner.EOPRunner -test -testFile <path to where mscproject was cloned>/mscproject/data/emergent/url-versions-2015-06-14-clean-test-rte.xml -config ./eop-resources-1.2.3/configuration-files/MaxEntClassificationEDA_Base+WN+VO+TP+TPPos_EN.xml -output <where you want the output to go>
             
-3. To train the model with the EmergentLite training data-set, and then test it with the EmergentLite test data-set:
+3. Train the model with the EmergentLite training data-set, and then test it with the EmergentLite test data-set:
 
       1. cd into the following directory: <where you installed EOP>/Excitement-Open-Platform-1.2.3/target/EOP-1.2.3
       2. train the model: issue the following command at the prompt:
@@ -145,7 +145,11 @@ The project comes complete with an ./output/eop/ directory containing pre-comput
       
       ./fold-X/ - the results of training the model on English RTE-3, and testing it on EmergentLite (test data-set fold X)
       
-      
+Running the following script:
+
+**python run_train_test.py**
+
+compares the (pre-computed) output of the MaxEntClassificationEDA classifier for the scenarios decribed above, and outputs accuracy results.
 
       
 
