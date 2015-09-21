@@ -8,7 +8,7 @@ This repository contains the souce code for my MSc Project: "For or Against? Ass
 6. activating the new virtual environment issuing the command: **source activate XXX** (or whatever you called it), at the command prompt
 7. installing package: repoze.lru (provides a function memoize decorator) by issuing the command: **conda install repoze.lru**, at the command prompt (accept whatever package updates it proposes)
 8. installing package: gensim (provides a word2vec library) by issuing the command: **conda install gensim**, at the command prompt (accept whatever package updates it proposes)
-9. installing package: munkres 1.0.7 (provides an implementation of the Hungarian Algorith, used for word alignment) by:
+9. installing package: munkres 1.0.7 (provides an implementation of the Hungarian Algorithm, used for word alignment) by:
     1. downloading the package from https://pypi.python.org/pypi/munkres/
     2. unzipping the file somewhere
     3. cd munkres-1.0.7
@@ -45,10 +45,11 @@ You should now have all you need to run the code. Now, cd into the bin/ director
       
 **python run_train_test.py -i**
 
-      As above, but the features are added incrementally, and the intermediate results of 10-fold cv are displayed during the cv       phase of training. The final output shows the changes in accuracy, in average over the cv folds, and on the test set,           as each new feature is added to the model, and should look something like:
+      As above, but the features are added incrementally, and the intermediate results of 10-fold cv are displayed 
+      during the cv phase of training. The final output shows the changes in accuracy, averaged over the cv folds, 
+      and on the test set, as each new feature is added to the model. The output should look something like:
       
       >> Training classifier <<
-      
       >> Classifying test data <<
       Confusion matrix:
       =================
@@ -81,12 +82,12 @@ You should now have all you need to run the code. Now, cd into the bin/ director
       
 **python run_train_test.py -f <command-separated list of feaures>**
 
-      In this case, the model can be run with any subset of the features, given as a comma-separated list, e.g.
+      Using the -f switch, the model can be run with any subset of the features, given as a comma-separated list, e.g.
       python run_train_test.py -f "Q,BoW,I".
       
 **python run_train_test.py -i -f <command-separated list of feaures>**
 
-      This mode combines the others so that a the incremental output for a given list of features, is displayed.,
+      This case combines the others so that a the incremental output for a given list of features, is displayed.,
 
 
 
