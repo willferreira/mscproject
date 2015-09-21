@@ -1,6 +1,6 @@
 WARNING: Contains lengthy instructions on how to run some code.
 
-This repository contains the souce code for my MSc Project: "For or Against? Assessing the evidence for news headline claims". The code is written in Python 2.7 and makes use of a number of external libraries, such as pandas, sklearn, gensim, munkres and others. To run the code from scratch, I suggest:
+This repository contains the source code for my MSc Project: "For or Against? Assessing the evidence for news headline claims". The code is written in Python 2.7 and makes use of a number of external libraries, such as pandas, sklearn, gensim, munkres and others. To run the code from scratch, I suggest:
 
 1. cloning the project in the normal way, i.e issuing the command: 
       
