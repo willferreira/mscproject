@@ -133,7 +133,7 @@ To run the code for the MaxEntClassificationEDA classifier, do the following:
             
       3. test the model: same as step 3. above
       
-In each case above, the output will consists of a number of files. The results files will be named: MaxEntClassificationEDA_Base+WN+VO+TP+TPPos_EN.xml_results.{txt or xml}; the contents are pretty self-explanatory.
+In each case above, the output will consist of a number of files. The results files will be named: MaxEntClassificationEDA_Base+WN+VO+TP+TPPos_EN.xml_results.{txt or xml}; the contents are pretty self-explanatory.
 
 The project comes complete with an ./output/eop/ directory containing pre-computed results:
 
