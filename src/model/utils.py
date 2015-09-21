@@ -382,10 +382,11 @@ class RunCV(object):
 
 
 def run_test(X, y, test_data, predictor, display=False):
-    if display:
-        print('>> Running against test data <<\n')
+    print '>> Training classifier <<\n'
 
     predictor.fit(X, y)
+    if display:
+        print('>> Classifying test data <<\n')
     test_data_copy = test_data.copy()
     y_test = test_data_copy.articleHeadlineStance.values
     score = predictor.score(test_data_copy, y_test)

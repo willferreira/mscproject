@@ -51,7 +51,7 @@ if __name__ == '__main__':
     #     ]
 
     parser.add_argument('-f',
-                        default='Q,BoW-Hed,BoW-Ref,I,BoW,Sim-Algn-W2V,Sim-Algn-PPDB,Root-Dist,Neg-Algn,SVO',
+                        default="Q,BoWHed,BoWRef,I,BoW,AlgnW2V,AlgnPPDB,RootDist,NegAlgn,SVO",
                         type=str)
     args = parser.parse_args()
 
@@ -64,14 +64,14 @@ if __name__ == '__main__':
 
     transforms = {
         'BoW': lambda: BoWTransform(),
-        'BoW-Ref': RefutingWordsTransform,
-        'BoW-Hed': HedgingWordsTransform,
+        'BoWRef': RefutingWordsTransform,
+        'BoWHed': HedgingWordsTransform,
         'Q': QuestionMarkTransform,
         'I': InteractionTransform,
-        'Sim-Algn-W2V': Word2VecSimilaritySemanticTransform,
-        'Sim-Algn-PPDB': AlignedPPDBSemanticTransform,
-        'Neg-Algn': NegationAlignmentTransform,
-        'Root-Dist': DependencyRootDistanceTransform,
+        'AlgnW2V': Word2VecSimilaritySemanticTransform,
+        'AlgnPPDB': AlignedPPDBSemanticTransform,
+        'NegAlgn': NegationAlignmentTransform,
+        'RootDist': DependencyRootDistanceTransform,
         'SVO': SVOTransform,
     }
 
@@ -92,13 +92,11 @@ if __name__ == '__main__':
             p = predictor(inc_transforms_cls)
             cv_score = RunCV(X, y, p, display=True).run_cv()
             test_score = run_test(X, y, test_data, p, display=True)
+
             df_out.ix[k, 'accuracy-cv'] = cv_score.accuracy
             df_out.ix[k, 'accuracy-test'] = test_score.accuracy
         print(df_out)
     else:
-        p = predictor([transforms[t] for t in inc_transforms])
-        cv_score = RunCV(X, y, p, display=True).run_cv()
-
         p = predictor([transforms[t] for t in inc_transforms])
         test_score = run_test(X, y, test_data, p, display=True)
 
