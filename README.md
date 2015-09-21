@@ -20,7 +20,30 @@ cd into the bin/ directory in the project. From here you can run the following:
 
 **python run_train_test.py**
 
-    - trains the model on the EmergentLite training data-set, and then runs the trained model on the test data-set. All the           features are used in the model, namely: Q,BoWHed,BoWRef,I,BoW,AlgnW2V,AlgnPPDB,RootDist,NegAlgn,SVO
+    - trains the model on the EmergentLite training data-set, and then runs the trained model on the test data-set. 
+      All the features are used in the model, namely: Q,BoWHed,BoWRef,I,BoW,AlgnW2V,AlgnPPDB,RootDist,NegAlgn,SVO. The
+      output consists. The output should look something like this:
+      
+      Feature set: ['Q', 'BoWHed', 'BoWRef', 'I', 'BoW', 'AlgnW2V', 'AlgnPPDB', 'RootDist', 'NegAlgn', 'SVO']
+      >> Training classifier <<
+      >> Classifying test data <<
+      
+      Confusion matrix:
+      =================
+                 for  against  observing
+      for        197       11         40
+      against     10       72         11
+      observing   54       11        103
+      
+      Measures:
+      =========
+      accuracy: 0.7308
+      
+      Per class:
+                  accuracy  precision     recall         F1
+      for        0.7740668  0.7547893  0.7943548  0.7740668
+      against    0.9155206  0.7659574  0.7741935  0.7700535
+      observing  0.7721022  0.6688312  0.6130952  0.6397516
 
 
 
