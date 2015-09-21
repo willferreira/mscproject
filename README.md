@@ -14,7 +14,7 @@ This repository contains the source code for my MSc Project: "For or Against? As
       **conda create -n XXX anaconda python=2.7** 
    
    (replacing XXX with whatever you want to call the environment, e.g. mscproject_py27)
-6. activating the new virtual environment issuing the followingcommand at the prompt:
+6. activating the new virtual environment issuing the following command at the prompt:
 
       **source activate XXX** 
       
