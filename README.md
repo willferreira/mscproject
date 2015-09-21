@@ -108,7 +108,7 @@ You should now have all you need to run the code. Now, cd into the bin/ director
       
 **python run_train_test.py -i -f <command-separated list of feaures>**
 
-      This case combines the others so that a the incremental output for a given list of features, is displayed.,
+      This case combines the others, so that a the incremental output for a given list of features is displayed.
 
 To run the code for the MaxEntClassificationEDA classifier, do the following:
 
