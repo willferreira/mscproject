@@ -19,6 +19,7 @@ You should now have all you need to run the code. The following is a description
 cd into the bin/ directory in the project. From here you can run the following:
 
 **python run_train_test.py**
+
     - trains the model on the EmergentLite training data-set, and then runs the trained model on the test data-set. All the           features are used in the model, namely: Q,BoWHed,BoWRef,I,BoW,AlgnW2V,AlgnPPDB,RootDist,NegAlgn,SVO
 
 
