@@ -14,15 +14,13 @@ This repository contains the souce code for my MSc Project: "For or Against? Ass
     3. cd munkres-1.0.7
     4. issuing the command: **python setup.py install**, at the command prompt
 
-You should now have all you need to run the code. The following is a description of what you can run, and what output it produces:
-
-cd into the bin/ directory in the project. From here you can run the following:
+You should now have all you need to run the code. Now, cd into the bin/ directory in the project. From here you can run the following:
 
 **python run_train_test.py**
 
     - trains the model on the EmergentLite training data-set, and then runs the trained model on the test data-set. 
-      All the features are used in the model, namely: Q,BoWHed,BoWRef,I,BoW,AlgnW2V,AlgnPPDB,RootDist,NegAlgn,SVO. The
-      output consists. The output should look something like this:
+      All the features are used in the model, namely: Q,BoWHed,BoWRef,I,BoW,AlgnW2V,AlgnPPDB,RootDist,NegAlgn,SVO. 
+      The output should look something like this:
       
       Feature set: ['Q', 'BoWHed', 'BoWRef', 'I', 'BoW', 'AlgnW2V', 'AlgnPPDB', 'RootDist', 'NegAlgn', 'SVO']
       >> Training classifier <<
@@ -44,6 +42,10 @@ cd into the bin/ directory in the project. From here you can run the following:
       for        0.7740668  0.7547893  0.7943548  0.7740668
       against    0.9155206  0.7659574  0.7741935  0.7700535
       observing  0.7721022  0.6688312  0.6130952  0.6397516
+      
+**python run_train_test.py -i**
+
+      As above, but the features are added incrementally, and the intermediate results of 10-fold cv are displayed during the cv       phase of training. The final output shows the changes in accuracy, in average over the cv folds, and on the test set,           as each new feature is added to the model.
 
 
 
