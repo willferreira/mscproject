@@ -21,8 +21,10 @@ This repository contains the souce code for my MSc Project: "For or Against? Ass
    prompt (accept whatever package updates it proposes):
       **conda install repoze.lru**
 8. installing package: gensim (provides a word2vec library) by issuing the command at the prompt 
-   (accept whatever package updates it proposes): 
+   (accept whatever package updates it proposes):
+
       **conda install gensim**
+      
 9. installing package: munkres 1.0.7 (provides an implementation of the Hungarian Algorithm, used for word alignment) by:
     1. downloading the package from https://pypi.python.org/pypi/munkres/
     2. unzipping the file somewhere
