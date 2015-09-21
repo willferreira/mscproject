@@ -137,10 +137,10 @@ In each case above, the output will consists of a number of files. The results f
 
 The project comes complete with an output/eop directory containing pre-computed results:
 
-      rte-clean-test/ - the results of training the model on English RTE-3, and testing it on EmergentLite (test data-set)
-      rte-clean-test-fa/ - the results of training the model on English RTE-3, and testing it on EmergentLite (test data-set) with *observing* stance article removed, i.e. only against the *for* and *against* labelled data
-      emergent-clean-test/ - the results of training the model on EmergentLite (training data-set), and testing it on EmergentLite (test data-set)
-      fold-X/ - the results of training the model on English RTE-3, and testing it on EmergentLite (test data-set fold X)
+      **rte-clean-test/** - the results of training the model on English RTE-3, and testing it on EmergentLite (test data-set)
+      **rte-clean-test-fa/** - the results of training the model on English RTE-3, and testing it on EmergentLite (test data-set) with *observing* stance article removed, i.e. only against the *for* and *against* labelled data
+      **emergent-clean-test/** - the results of training the model on EmergentLite (training data-set), and testing it on EmergentLite (test data-set)
+      **fold-X/** - the results of training the model on English RTE-3, and testing it on EmergentLite (test data-set fold X)
       
       
 
