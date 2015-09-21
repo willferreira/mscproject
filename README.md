@@ -35,7 +35,7 @@ This repository contains the souce code for my MSc Project: "For or Against? Ass
     3. cd munkres-1.0.7
     4. issuing the command: **python setup.py install**, at the prompt
 
-You should now have all you need to run the code. Now, cd into the bin/ directory in the project. From here you can run the following:
+You should now have all you need to run the code. The relevant scripts are in the project bin/ directory. From there you can run the following:
 
 **python run_train_test.py**
 
