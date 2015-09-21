@@ -45,7 +45,49 @@ You should now have all you need to run the code. Now, cd into the bin/ director
       
 **python run_train_test.py -i**
 
-      As above, but the features are added incrementally, and the intermediate results of 10-fold cv are displayed during the cv       phase of training. The final output shows the changes in accuracy, in average over the cv folds, and on the test set,           as each new feature is added to the model.
+      As above, but the features are added incrementally, and the intermediate results of 10-fold cv are displayed during the cv       phase of training. The final output shows the changes in accuracy, in average over the cv folds, and on the test set,           as each new feature is added to the model, and should look something like:
+      
+      >> Training classifier <<
+      
+      >> Classifying test data <<
+      Confusion matrix:
+      =================
+                 for  against  observing
+      for        197       11         40
+      against     10       72         11
+      observing   54       11        103
+      
+      Measures:
+      =========
+      accuracy: 0.7308
+      
+      Per class:
+                  accuracy  precision     recall         F1
+      for        0.7740668  0.7547893  0.7943548  0.7740668
+      against    0.9155206  0.7659574  0.7741935  0.7700535
+      observing  0.7721022  0.6688312  0.6130952  0.6397516
+      
+                accuracy-cv  accuracy-test
+      Q            0.511414       0.524558
+      BoWHed       0.601743       0.644401
+      BoWRef       0.692385       0.728880
+      I            0.693368       0.726916
+      BoW          0.707527       0.721022
+      AlgnW2V      0.706851       0.719057
+      AlgnPPDB     0.713028       0.717092
+      RootDist     0.725663       0.738703
+      NegAlgn      0.726644       0.732809
+      SVO          0.731760       0.730845
+      
+**python run_train_test.py -f <command-separated list of feaures>**
+
+      In this case, the model can be run with any subset of the features, given as a comma-separated list, e.g.
+      python run_train_test.py -f "Q,BoW,I".
+      
+**python run_train_test.py -i -f <command-separated list of feaures>**
+
+      This mode combines the others so that a the incremental output for a given list of features, is displayed.,
+
 
 
 
