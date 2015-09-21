@@ -135,15 +135,15 @@ To run the code for the MaxEntClassificationEDA classifier, do the following:
       
 In each case above, the output will consists of a number of files. The results files will be named: MaxEntClassificationEDA_Base+WN+VO+TP+TPPos_EN.xml_results.{txt or xml}; the contents are pretty self-explanatory.
 
-The project comes complete with an output/eop directory containing pre-computed results:
+The project comes complete with an ./output/eop/ directory containing pre-computed results:
 
-      rte-clean-test/ - the results of training the model on English RTE-3, and testing it on EmergentLite (test data-set)
+      ./rte-clean-test/ - the results of training the model on English RTE-3, and testing it on EmergentLite (test data-set)
       
-      rte-clean-test-fa/ - the results of training the model on English RTE-3, and testing it on EmergentLite (test data-set) with *observing* stance article removed, i.e. only against the *for* and *against* labelled data
+      ./rte-clean-test-fa/ - the results of training the model on English RTE-3, and testing it on EmergentLite (test data-set) with observing stance articles removed, i.e. only against the for and against stances
       
-      emergent-clean-test/ - the results of training the model on EmergentLite (training data-set), and testing it on EmergentLite (test data-set)
+      ./emergent-clean-test/ - the results of training the model on EmergentLite (training data-set), and testing it on EmergentLite (test data-set)
       
-      fold-X/ - the results of training the model on English RTE-3, and testing it on EmergentLite (test data-set fold X)
+      ./fold-X/ - the results of training the model on English RTE-3, and testing it on EmergentLite (test data-set fold X)
       
       
 
