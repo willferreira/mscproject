@@ -29,7 +29,7 @@ This repository contains the souce code for my MSc Project: "For or Against? Ass
     1. downloading the package from https://pypi.python.org/pypi/munkres/
     2. unzipping the file somewhere
     3. cd munkres-1.0.7
-    4. issuing the command: **python setup.py install**, at the command prompt
+    4. issuing the command: **python setup.py install**, at the prompt
 
 You should now have all you need to run the code. Now, cd into the bin/ directory in the project. From here you can run the following:
 
@@ -106,7 +106,10 @@ You should now have all you need to run the code. Now, cd into the bin/ director
 
       This case combines the others so that a the incremental output for a given list of features, is displayed.,
 
+To run the code for the MaxEntClassificationEDA classifier, do the following:
 
+1. Follow the instructions to download an install the code here: https://github.com/hltfbk/EOP-1.2.3/wiki
+2. 
 
 
 
