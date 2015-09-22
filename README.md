@@ -147,7 +147,7 @@ The project comes complete with an ./output/eop/ directory containing pre-comput
       
 Running the following script:
 
-**python run_train_test.py**
+**python run_eop_compare.py**
 
 compares the (pre-computed) output of the MaxEntClassificationEDA classifier for the scenarios decribed above, and outputs accuracy results.
 
