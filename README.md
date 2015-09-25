@@ -40,29 +40,29 @@ You should now have all you need to run the code. The relevant scripts are in th
 **python run_train_test.py**
 
     - trains the model on the EmergentLite training data-set, and then runs the trained model on the test data-set. 
-      All the features are used in the model, namely: Q,BoWHed,BoWRef,I,BoW,AlgnW2V,AlgnPPDB,RootDist,NegAlgn,SVO. 
+      All the features are used in the model, namely: Q,BoW,AlgnW2V,AlgnPPDB,RootDist,NegAlgn,SVO. 
       The output should look something like this:
       
-      Feature set: ['Q', 'BoWHed', 'BoWRef', 'I', 'BoW', 'AlgnW2V', 'AlgnPPDB', 'RootDist', 'NegAlgn', 'SVO']
+      Feature set: ['Q', 'BoW', 'AlgnW2V', 'AlgnPPDB', 'RootDist', 'NegAlgn', 'SVO']
       >> Training classifier <<
       >> Classifying test data <<
       
       Confusion matrix:
       =================
                  for  against  observing
-      for        197       11         40
-      against     10       72         11
-      observing   54       11        103
+      for        219        3         24
+      against     15       64         12
+      observing   75       11        101
       
       Measures:
       =========
-      accuracy: 0.7308
+      accuracy: 0.7328
       
       Per class:
                   accuracy  precision     recall         F1
-      for        0.7740668  0.7547893  0.7943548  0.7740668
-      against    0.9155206  0.7659574  0.7741935  0.7700535
-      observing  0.7721022  0.6688312  0.6130952  0.6397516
+      for        0.7767176  0.7087379  0.8902439  0.7891892
+      against    0.9217557  0.8205128  0.7032967  0.7573964
+      observing  0.7671756  0.7372263   0.540107  0.6234568
       
 **python run_train_test.py -i**
 
@@ -70,45 +70,65 @@ You should now have all you need to run the code. The relevant scripts are in th
       during the cv phase of training. The final output shows the changes in accuracy, averaged over the cv folds, 
       and on the test set, as each new feature is added to the model. The (final) output should look something like:
       
+      <lots of fold specific output>
+      ...
+      
       >> Training classifier <<
       >> Classifying test data <<
+      
       Confusion matrix:
       =================
                  for  against  observing
-      for        197       11         40
-      against     10       72         11
-      observing   54       11        103
+      for        219        3         24
+      against     15       64         12
+      observing   75       11        101
       
       Measures:
       =========
-      accuracy: 0.7308
+      accuracy: 0.7328
       
       Per class:
                   accuracy  precision     recall         F1
-      for        0.7740668  0.7547893  0.7943548  0.7740668
-      against    0.9155206  0.7659574  0.7741935  0.7700535
-      observing  0.7721022  0.6688312  0.6130952  0.6397516
+      for        0.7767176  0.7087379  0.8902439  0.7891892
+      against    0.9217557  0.8205128  0.7032967  0.7573964
+      observing  0.7671756  0.7372263   0.540107  0.6234568
+                  accuracy-cv  accuracy-test
+      Q           0.519765          0.503817
+      BoW         0.708224          0.698473
+      W2V         0.708909          0.698473
+      PPDB        0.711729          0.713740
+      RootDep     0.731114          0.732824
+      NegAlgn     0.732362          0.730916
+      SVO         0.734407          0.732824
       
-                accuracy-cv  accuracy-test
-      Q            0.511414       0.524558
-      BoWHed       0.601743       0.644401
-      BoWRef       0.692385       0.728880
-      I            0.693368       0.726916
-      BoW          0.707527       0.721022
-      AlgnW2V      0.706851       0.719057
-      AlgnPPDB     0.713028       0.717092
-      RootDist     0.725663       0.738703
-      NegAlgn      0.726644       0.732809
-      SVO          0.731760       0.730845
-      
-**python run_train_test.py -f <command-separated list of feaures>**
+**python run_train_test.py -f <command-separated list of features>**
 
       Using the -f switch, the model can be run with any subset of the features, given as a comma-separated list, e.g.
-      python run_train_test.py -f "Q,BoW,I".
+      python run_train_test.py -f "Q,BoW,SVO".
       
-**python run_train_test.py -i -f <command-separated list of feaures>**
+**python run_train_test.py -i -f <command-separated list of features>**
 
-      This case combines the others, so that a the incremental output for a given list of features is displayed.
+      This case combines the above, so that a the incremental output for a given list of features is displayed.
+      
+**python run_train_test.py -a**
+
+      Using the -a switch causes the script to run the ablation test. The final output should look something like this:
+      
+      <lots of feature specfic output>
+      ...
+      
+                  accuracy-cv       accuracy-test
+      -['Q']           1.848082       0.190840
+      -['BoW']         1.664340       5.152672
+      -['W2V']         0.049020      -0.190840
+      -['PPDB']        0.466699       0.763359
+      -['RootDep']     2.024615       2.480916
+      -['NegAlgn']     0.335388       0.000000
+      -['SVO']         0.204543       0.190840
+      
+**python run_train_test.py -a -f <command-separated list of features>**
+
+      This case performs the ablation test for a given list of features is displayed.
 
 To run the code for the MaxEntClassificationEDA classifier, do the following:
 
