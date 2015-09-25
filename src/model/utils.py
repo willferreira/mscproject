@@ -254,6 +254,13 @@ def get_ppdb_data():
 
 
 _stemmer = PorterStemmer()
+
+
+@lru_cache(maxsize=100000)
+def get_stem(w):
+    return _stemmer.stem(w)
+
+
 _max_ppdb_score = 10.0
 _min_ppdb_score = -_max_ppdb_score
 
@@ -262,8 +269,8 @@ _min_ppdb_score = -_max_ppdb_score
 def compute_paraphrase_score(s, t):
     """Return numerical estimate of whether t is a paraphrase of s, up to
     stemming of s and t."""
-    s_stem = _stemmer.stem(s)
-    t_stem = _stemmer.stem(t)
+    s_stem = get_stem(s)
+    t_stem = get_stem(t)
 
     if s_stem == t_stem:
         return _max_ppdb_score
@@ -284,6 +291,10 @@ def get_stanford_idx(x):
     return x[:i].lower(), int(x[(i+1):])
 
 
+def _is_not(w):
+    return w.lower() == 'not' or w.lower() == "n't"
+
+
 def find_negated_word_idxs(id):
     neg_word_idxs = []
     try:
@@ -294,10 +305,10 @@ def find_negated_word_idxs(id):
                 h, h_idx = get_stanford_idx(head)
 
                 if rel == 'neg' \
-                        or (rel == 'nn' and d.lower() == 'not'):
+                        or (rel == 'nn' and _is_not(d)):
                     neg_word_idxs.append(h_idx-1)
 
-                if rel == 'pcomp' and h.lower() == 'not':
+                if rel == 'pcomp' and _is_not(h):
                     neg_word_idxs.append(d_idx-1)
     except KeyError:
         pass
@@ -427,15 +438,6 @@ def get_svo_triples(id):
         grph, grph_labels, _ = x
         d.extend([(i, s) for s in get_svo(grph, grph_labels)])
     return d
-
-
-if __name__ == '__main__':
-    id = get_stanparse_data().keys()[3]
-    for id in get_stanparse_data().keys():
-        triples = get_svo_triples(id)
-        if triples:
-            print id
-            print triples
 
 
 

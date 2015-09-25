@@ -20,7 +20,7 @@ from model.ext.transforms import (
     AlignedPPDBSemanticTransform,
     NegationAlignmentTransform,
     Word2VecSimilaritySemanticTransform,
-    DependencyRootDistanceTransform,
+    DependencyRootDepthTransform,
     SVOTransform
 )
 
@@ -49,15 +49,11 @@ def powerset(iterable):
 if __name__ == "__main__":
 
     transforms = {
-        RefutingWordsTransform,
-        HedgingWordsTransform,
-        QuestionMarkTransform,
-        InteractionTransform,
         Word2VecSimilaritySemanticTransform,
         AlignedPPDBSemanticTransform,
         NegationOfRefutingWordsTransform,
         NegationAlignmentTransform,
-        DependencyRootDistanceTransform,
+        DependencyRootDepthTransform,
         SVOTransform,
         # PolarityTransform
     }
@@ -78,8 +74,8 @@ if __name__ == "__main__":
             return self.__str__()
 
     bow_transform_funcs = []
-    for ngram_ur in range(2, 5):
-        for max_feat in (50, 100, 150, 200):
+    for ngram_ur in range(2, 3):
+        for max_feat in (200, 300, 400, 500, 600, 700, 800):
             bow_transform_funcs.append(CallableBowTransform(ngram_ur, max_feat))
 
     transforms.union(bow_transform_funcs)
@@ -88,7 +84,7 @@ if __name__ == "__main__":
     X, y = split_data(train_data)
     ckf = ClaimKFold(X, n_folds=5)
 
-    classifier = LogitPredictor(transforms)
+    classifier = LogitPredictor([QuestionMarkTransform])
 
     param_grid = [
         {

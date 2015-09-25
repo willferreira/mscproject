@@ -13,7 +13,7 @@ from model.baseline.transforms import _refuting_words, _hedging_words
 class Word2VecSimilaritySemanticTransform(StatelessTransform):
 
     def transform(self, X):
-        _, cos_mult = get_cosine_similarity_data()
+        cos_add, cos_mult = get_cosine_similarity_data()
         mat = np.zeros((len(X), 1))
         for i, (_, s) in enumerate(X.iterrows()):
             if np.isnan(mat[i, 0]):
@@ -23,6 +23,18 @@ class Word2VecSimilaritySemanticTransform(StatelessTransform):
 
 
 _hungarian = get_hungarian_alignment_score_data()
+
+
+class AlignedPPDBSemanticTransform(StatelessTransform):
+
+    _bins = np.arange(-10.0, 10.05, 0.05)
+
+    def transform(self, X):
+        mat = np.zeros((len(X), 1))
+        for i, (_, s) in enumerate(X.iterrows()):
+            # mat[i, 0] = _hungarian[(s.claimId, s.articleId)][1]
+            mat[i, 0] = np.digitize([_hungarian[(s.claimId, s.articleId)][1]], self._bins)[0]
+        return mat
 
 
 class AlignedPPDBSemanticTransform(StatelessTransform):
@@ -37,7 +49,7 @@ class AlignedPPDBSemanticTransform(StatelessTransform):
 class NegationAlignmentTransform(StatelessTransform):
 
     def transform(self, X):
-        mat = np.zeros((len(X), 3))
+        mat = np.zeros((len(X), 1))
         for i, (_, s) in enumerate(X.iterrows()):
             claim_negated_idxs = find_negated_word_idxs(s.claimId)
             article_negated_idxs = find_negated_word_idxs(s.articleId)
@@ -45,16 +57,13 @@ class NegationAlignmentTransform(StatelessTransform):
                 continue
 
             for a, b in _hungarian[(s.claimId, s.articleId)][0]:
-                if a in claim_negated_idxs and b not in article_negated_idxs:
+                if (a in claim_negated_idxs and b not in article_negated_idxs) or \
+                        (a not in claim_negated_idxs and b in article_negated_idxs):
                     mat[i, 0] = 1
-                if a not in claim_negated_idxs and b in article_negated_idxs:
-                    mat[i, 1] = 1
-                if a in claim_negated_idxs and b in article_negated_idxs:
-                    mat[i, 2] = 1
         return mat
 
 
-class DependencyRootDistanceTransform(StatelessTransform):
+class DependencyRootDepthTransform(StatelessTransform):
 
     @staticmethod
     def _find_matching(lemmas, words):
@@ -98,11 +107,13 @@ class SVOTransform(StatelessTransform):
         'ReverseEntailment': 0,
         'ForwardEntailment': 1,
         'Equivalence': 2,
+        'OtherRelated': 2,
+        'Independence': 3
     }
 
     @staticmethod
     def _calc_entailment_vec(v, w):
-        vec = np.zeros((1, len(SVOTransform._entailment_map)))
+        vec = np.zeros((1, len(set(SVOTransform._entailment_map.values()))))
 
         if v == w:
             vec[0, SVOTransform._entailment_map['Equivalence']] = 1
@@ -125,13 +136,14 @@ class SVOTransform(StatelessTransform):
         return sentence['words'][pos-1][1]['Lemma'].lower()
 
     def transform(self, X):
-        mat = np.zeros((len(X), 3*len(SVOTransform._entailment_map)))
+        ll = 3*len(set(SVOTransform._entailment_map.values()))
+        mat = np.zeros((len(X), ll))
         for i, (_, s) in enumerate(X.iterrows()):
             try:
                 claim_svos = get_svo_triples(s.claimId)
                 article_svos = get_svo_triples(s.articleId)
 
-                vec = np.zeros((1, 3*len(SVOTransform._entailment_map)))
+                vec = np.zeros((1, ll))
                 for (csvo, asvo) in it.product(claim_svos, article_svos):
                     s_num_c, svo_pos_c = csvo
                     s_num_a, svo_pos_a = asvo
@@ -152,19 +164,12 @@ class SVOTransform(StatelessTransform):
                         self._get_word_in_sentence_at_pos(s.articleId, s_num_a, svo_pos_a['dobj'][1])
                     )
 
-                    vec[0, 0:3] += nsubj_entailment[0]
-                    vec[0, 3:6] += verb_entailment[0]
-                    vec[0, 6:] += dobj_entailment[0]
+                    vec[0, 0:4] += nsubj_entailment[0]
+                    vec[0, 4:8] += verb_entailment[0]
+                    vec[0, 8:] += dobj_entailment[0]
                 mat[i, :] = vec
             except:
                 pass
         return mat
-
-
-if __name__ == '__main__':
-    svot = NegationAlignmentTransform()
-    df = get_dataset()
-    # df = df[df.articleId == '9a203340-947a-11e4-b6bf-fdc8b7e3bcff']
-    print svot.transform(df)
 
 

@@ -41,9 +41,9 @@ if __name__ == '__main__':
         with open(os.path.join('..', 'data', 'emergent', output_filename), 'w') as f:
             f.write(_generate_xml(df_fa))
 
-    # for ds_filename in _dataset_files:
-    #     df = get_dataset(ds_filename)
-    #     output_filename = '{0:s}-rte.xml'.format(ds_filename.split('.')[0])
-    #     with open(os.path.join('..', 'data', 'emergent', output_filename), 'w') as f:
-    #         f.write(_generate_xml(df))
+    for ds_filename in _dataset_files:
+        df = get_dataset(ds_filename)
+        output_filename = '{0:s}-rte.xml'.format(ds_filename.split('.')[0])
+        with open(os.path.join('..', 'data', 'emergent', output_filename), 'w') as f:
+            f.write(_generate_xml(df))
 

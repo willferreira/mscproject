@@ -27,15 +27,13 @@ from model.ext.transforms import (
     AlignedPPDBSemanticTransform,
     NegationAlignmentTransform,
     Word2VecSimilaritySemanticTransform,
-    DependencyRootDistanceTransform,
+    DependencyRootDepthTransform,
     SVOTransform
 )
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='run_baseline cmd-line arguments.')
-
-    parser.add_argument('-i', action='store_true', default=False)
 
     # inc_transforms = [
     #     'Q',                # 1             1
@@ -51,8 +49,12 @@ if __name__ == '__main__':
     #     ]
 
     parser.add_argument('-f',
-                        default="Q,BoWHed,BoWRef,I,BoW,AlgnW2V,AlgnPPDB,RootDist,NegAlgn,SVO",
+                        default="Q,BoW,W2V,PPDB,RootDep,NegAlgn,SVO",
                         type=str)
+    group = parser.add_mutually_exclusive_group()
+    group.add_argument('-i', action='store_true')
+    group.add_argument('-a', action='store_true')
+
     args = parser.parse_args()
 
     predictor = LogitPredictor
@@ -64,14 +66,11 @@ if __name__ == '__main__':
 
     transforms = {
         'BoW': lambda: BoWTransform(),
-        'BoWRef': RefutingWordsTransform,
-        'BoWHed': HedgingWordsTransform,
         'Q': QuestionMarkTransform,
-        'I': InteractionTransform,
-        'AlgnW2V': Word2VecSimilaritySemanticTransform,
-        'AlgnPPDB': AlignedPPDBSemanticTransform,
+        'W2V': Word2VecSimilaritySemanticTransform,
+        'PPDB': AlignedPPDBSemanticTransform,
         'NegAlgn': NegationAlignmentTransform,
-        'RootDist': DependencyRootDistanceTransform,
+        'RootDep': DependencyRootDepthTransform,
         'SVO': SVOTransform,
     }
 
@@ -82,6 +81,8 @@ if __name__ == '__main__':
         sys.exit(1)
     print 'Feature set:', inc_transforms
     if args.i:
+        # incremental
+        print 'Incremental test'
         df_out = pd.DataFrame(index=inc_transforms,
                               columns=['accuracy-cv', 'accuracy-test'], data=np.nan)
         inc_transforms_cls = []
@@ -96,6 +97,44 @@ if __name__ == '__main__':
             df_out.ix[k, 'accuracy-cv'] = cv_score.accuracy
             df_out.ix[k, 'accuracy-test'] = test_score.accuracy
         print(df_out)
+    elif args.a:
+        # ablation
+        print 'Ablation test'
+
+        if args.f:
+            features = args.f
+        else:
+            features = "Q,BoW,AlgnW2V,AlgnPPDB,RootDist,NegAlgn,SVO"
+        ablations = [[x] for x in features.split(',')]
+        df_out = pd.DataFrame(index=['-' + str(a) for a in ablations],
+                              columns=['accuracy-cv', 'accuracy-test'], data=np.nan)
+        inc_transforms_cls = [transforms[t] for t in inc_transforms]
+        p = predictor(inc_transforms_cls)
+        cv_score = RunCV(X, y, p, display=False).run_cv()
+        test_score = run_test(X, y, test_data, p, display=False)
+        print 'CV score: :{0:f}'.format(cv_score.accuracy)
+        print 'Test score: :{0:f}'.format(test_score.accuracy)
+
+        for ablation in ablations:
+            print 'Ablating: ' + str(ablation)
+            inc_transforms_ablate = list(inc_transforms)
+            for a in ablation:
+                try:
+                    inc_transforms_ablate.remove(a)
+                except:
+                    pass
+            print 'Ablated feature set:' + str(inc_transforms_ablate)
+            inc_transforms_cls_ablate = [transforms[t] for t in inc_transforms_ablate]
+            p = predictor(inc_transforms_cls_ablate)
+            cv_score_ablate = RunCV(X, y, p, display=False).run_cv()
+            test_score_ablate = run_test(X, y, test_data, p, display=False)
+
+            key = '-' + str(ablation)
+            print 'Ablated CV score:', cv_score_ablate.accuracy
+            print 'Ablated test score:', test_score_ablate.accuracy
+            df_out.ix[key, 'accuracy-cv'] = cv_score.accuracy - cv_score_ablate.accuracy
+            df_out.ix[key, 'accuracy-test'] = test_score.accuracy - test_score_ablate.accuracy
+        print(df_out * 100.0)
     else:
         p = predictor([transforms[t] for t in inc_transforms])
         test_score = run_test(X, y, test_data, p, display=True)

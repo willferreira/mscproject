@@ -57,16 +57,16 @@ def _clean_text(data):
 
     funcs.append(convert_to_utf)
 
-    # Strip words "REPORT:" and "UPDATE:" from claim and article text
+    # Strip words containing article source prefix
     _strip_words = ['REPORT', 'REPORTS', 'PODCAST',
                     'CNN', 'CNBC', 'Net Extra', 'WSJ']
 
-    def strip_report_update(s):
+    def strip_source_prefix(s):
         for w in _strip_words:
             s = re.sub(w + ':', '', s, flags=re.IGNORECASE)
         return s
 
-    funcs.append(strip_report_update)
+    funcs.append(strip_source_prefix)
 
     # Clean up some unicode quotations poop
     utf_quotation_marks = [u'\u2032', u'\u2019', u'\u2018',
@@ -98,7 +98,7 @@ def _clean_text(data):
             s = re.sub(c, e, s, flags=re.IGNORECASE)
         return s
 
-    funcs.append(expand_contractions)
+    # funcs.append(expand_contractions)
 
     my_punctuation = ''.join(set(string.punctuation).difference(['?', ',', '.', ':', '-', '\'']))
 

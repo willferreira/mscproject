@@ -8,8 +8,8 @@ from sklearn.preprocessing import PolynomialFeatures
 from sklearn.feature_extraction.text import CountVectorizer
 
 from model.base import StatelessTransform
-from model.utils import get_tokenized_lemmas, is_antonym, is_synonym, get_stanparse_data, \
-    entails, get_brown_cluster_data, get_aligned_data
+from model.utils import get_tokenized_lemmas, get_stanparse_data, \
+    get_brown_cluster_data, get_aligned_data, get_stem
 
 
 class BoWTransform(StatelessTransform):
@@ -20,9 +20,9 @@ class BoWTransform(StatelessTransform):
         self.max_features = max_features
 
     def fit(self, X, y=None):
+        text = X.articleHeadline.values
         self.cv = CountVectorizer(ngram_range=(1, self.ngram_upper_range),
                                   max_features=self.max_features)
-        text = X.articleHeadline.values
         self.cv.fit_transform(text)
         return self
 
@@ -37,11 +37,15 @@ _refuting_seed_words = [
                         'hoax',
                         'false',
                         'deny', 'denies',
-                        'refute',
+                        # 'refute',
                         'not',
                         'despite',
                         'nope',
-                        'doubt', 'doubts'
+                        'doubt', 'doubts',
+                        'bogus',
+                        'debunk',
+                        'pranks',
+                        'retract'
 ]
 
 _refuting_words = _refuting_seed_words
@@ -52,7 +56,9 @@ class RefutingWordsTransform(StatelessTransform):
     def transform(self, X):
         mat = np.zeros((len(X), len(_refuting_words)))
         for i, (_, s) in enumerate(X.iterrows()):
+            # article_headline = [get_stem(w) for w in get_tokenized_lemmas(s.articleHeadline)]
             article_headline = get_tokenized_lemmas(s.articleHeadline)
+            # mat[i, :] = np.array([1 if get_stem(w) in article_headline else 0 for w in _refuting_words])
             mat[i, :] = np.array([1 if w in article_headline else 0 for w in _refuting_words])
         return mat
 
@@ -140,14 +146,13 @@ _hedging_seed_words = \
         'probably',
         'purported', 'purportedly',
         'reported', 'reportedly',
-        'rumor', 'rumors', 'rumour', 'rumours', 'rumored', 'rumoured',
+        'rumor', 'rumour', 'rumors', 'rumours', 'rumored', 'rumoured',
         'says',
-        'seem', 'seems',
+        'seem',
         'somewhat',
-        'supposedly',
+        # 'supposedly',
         'unconfirmed']
 
-# _hedging_words = get_wordnet_list(get_synonyms, _hedging_seed_words)
 _hedging_words = _hedging_seed_words
 
 
@@ -156,7 +161,9 @@ class HedgingWordsTransform(StatelessTransform):
     def transform(self, X):
         mat = np.zeros((len(X), len(_hedging_words)))
         for i, (_, s) in enumerate(X.iterrows()):
+            # article_headline = [get_stem(w) for w in get_tokenized_lemmas(s.articleHeadline)]
             article_headline = get_tokenized_lemmas(s.articleHeadline)
+            # mat[i, :] = np.array([1 if get_stem(w) in article_headline else 0 for w in _hedging_words])
             mat[i, :] = np.array([1 if w in article_headline else 0 for w in _hedging_words])
         return mat
 
